@@ -31,9 +31,8 @@ use XML::Simple;
 {
 	say "AU ENDPOINT; AU DATA STRUCUTRE - Direct";
 	my $sifrest = SIF::REST->new({
-		endpoint => 'http://siftraining.dd.com.au/api',
-		#endpoint => 'http://localhost:3000',
-		solutionId => 'auTestSolution',
+		#endpoint => 'http://siftraining.dd.com.au/api',
+		endpoint => 'http://localhost:3000',
 	});
 	$sifrest->setupRest();
 
