@@ -108,7 +108,7 @@ sub environment_create {
 		'environments/environment', 
 		$self->environment_xml_send,
 		{
-			'Authorization' => 'Basic '. encode_base64($self->consumerKey . ':' . $self->consumerSecret),
+			'Authorization' => 'Basic '. encode_base64($self->consumerKey . ':' . $self->consumerSecret, ""),
 		}
 	);
 
@@ -126,7 +126,7 @@ sub xml2data {
 
 sub authorization {
 	my ($self) = @_;
-	return 'Basic '.  encode_base64($self->sessionToken . ':' . $self->consumerSecret);
+	return 'Basic '.  encode_base64($self->sessionToken . ':' . $self->consumerSecret, "");
 }
 
 sub setupRest {
