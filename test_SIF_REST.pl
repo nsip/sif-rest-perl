@@ -10,6 +10,7 @@ use XML::Simple;
 		endpoint => 'http://rest3api.sifassociation.org/api',
 	});
 	$sifrest->setupRest();
+	say "HOST = " . $sifrest->rest->getHost;
 
 	my $students = XMLin($sifrest->get('students'), ForceArray => 0);
 	print join(", ", map { $_->{name}{nameOfRecord}{fullName} } @{$students->{student}}[0..10] ) . "\n";
