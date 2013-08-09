@@ -124,9 +124,14 @@ sub xml2data {
 	return XMLin($in, ForceArray => 0);
 }
 
+sub authorization {
+	my ($self) = @_;
+	return 'Basic '.  encode_base64($self->sessionToken . ':' . $self->consumerSecret);
+}
+
 sub setupRest {
 	my ($self) = @_;
-	$self->rest->addHeader('Authorization', 'Basic '.  encode_base64($self->sessionToken . ':' . $self->consumerSecret));
+	$self->rest->addHeader('Authorization', $self->authorization);
 
 	# XXX proper way here is to re-request environment data if not already known
 	# XXX e.g. if a user includes a sessionToken, then how do I get requestsConnector ? from Environments
