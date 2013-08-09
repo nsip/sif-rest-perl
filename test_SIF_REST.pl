@@ -3,6 +3,7 @@ use perl5i::2;
 use lib 'lib';
 use SIF::REST;
 use XML::Simple;
+use Data::Dumper;
 
 {
 	say "US ENDPOINT; US DATA STRUCTURE - Direct";
@@ -11,6 +12,7 @@ use XML::Simple;
 	});
 	$sifrest->setupRest();
 	say "HOST = " . $sifrest->rest->getHost;
+	#say Dumper($sifrest->environment_data);
 
 	my $students = XMLin($sifrest->get('students'), ForceArray => 0);
 	print join(", ", map { $_->{name}{nameOfRecord}{fullName} } @{$students->{student}}[0..10] ) . "\n";
