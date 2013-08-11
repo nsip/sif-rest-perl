@@ -14,10 +14,13 @@ use Data::Dumper;
 	say "HOST = " . $sifrest->rest->getHost;
 	#say Dumper($sifrest->environment_data);
 
-	my $students = XMLin($sifrest->get('students'), ForceArray => 0);
+	my $xml = $sifrest->get('students');
+	say $xml;
+	my $students = XMLin($xml, ForceArray => 0);
 	print join(", ", map { $_->{name}{nameOfRecord}{fullName} } @{$students->{student}}[0..10] ) . "\n";
 }
 
+__END__
 {
 	say "US ENDPOINT; AU DATA STRUCUTRE - Brokered";
 	my $sifrest = SIF::REST->new({
