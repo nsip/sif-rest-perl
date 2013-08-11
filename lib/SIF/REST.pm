@@ -112,7 +112,7 @@ sub environment_create {
 		}
 	);
 
-	#say $client->responseContent();
+	# print $self->rest->responseContent();
 	$self->environment_xml_receive($self->rest->responseContent());
 	$self->environment_data($self->xml2data($self->environment_xml_receive));
 	return $self->environment_data->{sessionToken};
