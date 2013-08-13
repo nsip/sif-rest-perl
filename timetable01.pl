@@ -9,43 +9,58 @@ use SIF::AU;
 
 # PUPOSE: Create a School using Data Objects
 
-# SIF REST Client
-my $sifrest = SIF::REST->new({
-	endpoint => 'http://siftraining.dd.com.au/api',
-});
-$sifrest->setupRest();
+# ----------------------------------------------------------------------
+# Get Existing Records
+my $school_refid = "DC56C532026B11E3A5325DE06940ABA3";
+my $room_refid = "EB571E74026B11E3A5325DE06940ABA3";
+my $teaching_group_refid = "fake01";
 
+# ----------------------------------------------------------------------
 # A Timetable
 my $TT = SIF::AU::TimeTable->new();
 $TT->SchoolYear('2009');
 $TT->DaysPerCycle(5);
 #$TT->PeriodsPerCycle(5);
+#$TT->SchoolRefId($school_refid);
 $TT = _create($TT);
-print $TT->RefId() . "\n";
+print "TT = " . $TT->RefId() . "\n";
 
-# Create the school object
+# ----------------------------------------------------------------------
+# TimeTableSubject
+my $TTS = SIF::AU::TimeTableSubject->new();
+$TTS->Faculty("XXX");
+#$TTS->SchoolInfoRefId($school_refid);
+$TTS->SubjectLocalId("A1");
+$TTS->SubjectShortName("Eng");
+$TTS->SubjectLongName("English");
+$TTS->SubjectType("X");
+$TTS = _create($TTS);
+print "TTS = " . $TTS->RefId() . "\n";
+
+# ----------------------------------------------------------------------
+# TimeTableCell
 my $TTC = SIF::AU::TimeTableCell->new();
 $TTC->TimeTableRefId($TT->RefId);
-#$TT->TimeTableSubjectRefId($XXX);
-#$TT->TeachingGroupRefId($XXX);
-$TTC->RoomInfoRefId('EB571E74026B11E3A5325DE06940ABA3');
-#RoomInfoRefId
-#SchoolInfoRefId
+$TTC->TimeTableSubjectRefId($TTS->RefId);
+$TTC->RoomInfoRefId($room_refid);
+$TTC->SchoolInfoRefId($school_refid);
 #StaffPersonalRefId
-#TeachingGroupRefId
-#TimeTableRefId
-#TimeTableSubjectRefId
+$TTC->TeachingGroupRefId($teaching_group_refid);
 $TTC->CellType('CT');
 $TTC->PeriodId('PI');
 $TTC->DayId('DI');
+$TTC = _create($TTC);
+print "TTC = " . $TTC->RefId() . "\n";
+
+print "\n\n";
 print $TTC->to_xml_string();
 
 exit 0;
 
+# ======================================================================
 # CREATE form an Object and return the object
 sub _create {
 	my ($obj) = @_;
-
 	# TODO support Multiple create
 	
 	my $class = ref($obj);
@@ -53,6 +68,26 @@ sub _create {
 	$name =~ s/^SIF::AU:://g;
 
 	# POST / CREATE
-	my $xml = $sifrest->post($name . 's', $name, $obj->to_xml_string());
-	return $class->from_xml($xml);
+	my $xml;
+	my $ret = eval {
+		$xml = _rest()->post($name . 's', $name, $obj->to_xml_string());
+		return $class->from_xml($xml);
+	};
+	if ($@) {
+		die "ERROR $@. Original XML = $xml\n";
+	}
+	return $ret;
 }
+
+sub _rest {
+	our $sifrest;
+	if (! $sifrest) {
+		# SIF REST Client
+		$sifrest = SIF::REST->new({
+			endpoint => 'http://siftraining.dd.com.au/api',
+		});
+		$sifrest->setupRest();
+	}
+	return $sifrest;
+}
+
