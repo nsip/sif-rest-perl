@@ -78,6 +78,12 @@ has solutionId => (
 	default => 'testSolution',
 );
 
+has type => (
+	is => 'rw',
+	required => 1,
+	default => 'DIRECT',
+);
+
 # environment_xml_send - generated or provided XML to generate a new environment
 has environment_xml_send => (
 	is => 'rw',
@@ -86,7 +92,8 @@ has environment_xml_send => (
 	default => sub {
 		my ($self) = @_;
 		# TODO - what about setting better actual data?
-		return qq{<environment><solutionId>} . $self->solutionId . qq{</solutionId><authenticationMethod>Basic</authenticationMethod><consumerName>Perl</consumerName><applicationInfo><applicationKey>PERL</applicationKey><supportedInfrastructureVersion>3.0</supportedInfrastructureVersion><supportedDataModel>SIF-US</supportedDataModel><supportedDataModelVersion>3.0</supportedDataModelVersion><transport>REST</transport><applicationProduct><vendorName>X</vendorName><productName>X</productName><productVersion>X</productVersion></applicationProduct></applicationInfo></environment>};
+		# XXX type="DIRECT" is required for Joerg, and must NOT be for SIF-RS - Need to resolve...
+		return qq{<environment} . ($self->type ? ' type="' . $self->type  . '"': '') . qq{><solutionId>} . $self->solutionId . qq{</solutionId><authenticationMethod>Basic</authenticationMethod><consumerName>Perl</consumerName><applicationInfo><applicationKey>PERL</applicationKey><supportedInfrastructureVersion>3.0</supportedInfrastructureVersion><supportedDataModel>SIF-US</supportedDataModel><supportedDataModelVersion>3.0</supportedDataModelVersion><transport>REST</transport><applicationProduct><vendorName>X</vendorName><productName>X</productName><productVersion>X</productVersion></applicationProduct></applicationInfo></environment>};
 	},
 );
 
@@ -121,6 +128,7 @@ sub environment_create {
 # NOTE: Simplified XML convert - see SIF::AU::XML instead !
 sub xml2data {
 	my ($self, $in) = @_;
+	print STDERR $in;
 	return XMLin($in, ForceArray => 0);
 }
 
@@ -138,6 +146,9 @@ sub setupRest {
 	# XXX But then I need an environment ID saved as well...
 	my $host = $self->environment_data->{infrastructureServices}{infrastructureService}{requestsConnector}{content};
 	die "Invalid hostname / endpoint = $host" unless ($host =~ /^https?:\/\/.+$/);
+	#if (($host =~ /localhost/) && ($self->endpoint !~ /localhost/) ) {
+	#	$host =~ s/
+	#}
 	$self->rest->setHost($host);
 }
 

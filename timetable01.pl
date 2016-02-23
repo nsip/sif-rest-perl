@@ -28,14 +28,15 @@ print "TT = " . $TT->RefId() . "\n";
 # ----------------------------------------------------------------------
 # TimeTableSubject
 my $TTS = SIF::AU::TimeTableSubject->new();
-$TTS->Faculty("XXX");
+$TTS->Faculty("Maths");
 #$TTS->SchoolInfoRefId($school_refid);
-$TTS->SubjectLocalId("A1");
-$TTS->SubjectShortName("Eng");
-$TTS->SubjectLongName("English");
-$TTS->SubjectType("X");
+$TTS->SubjectLocalId("MAT");
+$TTS->SubjectShortName("Mat");
+$TTS->SubjectLongName("Mathematics");
+$TTS->SubjectType("mat");
 $TTS = _create($TTS);
 print "TTS = " . $TTS->RefId() . "\n";
+print $TTS->to_xml_string();
 
 # ----------------------------------------------------------------------
 # TimeTableCell

@@ -6,8 +6,8 @@ use XML::Simple;
 use Data::Dumper;
 
 my $sifrest = SIF::REST->new({
-	#endpoint => 'http://localhost:3000',
-	endpoint => 'http://siftraining.dd.com.au/api',
+	endpoint => 'http://localhost:3000',
+	#endpoint => 'http://siftraining.dd.com.au/api',
 });
 $sifrest->setupRest();
 

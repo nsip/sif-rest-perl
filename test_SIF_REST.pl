@@ -5,7 +5,7 @@ use SIF::REST;
 use XML::Simple;
 use Data::Dumper;
 
-{
+if (0) {
 	say "US ENDPOINT; US DATA STRUCTURE - Direct";
 	my $sifrest = SIF::REST->new({
 		endpoint => 'http://rest3api.sifassociation.org/api',
@@ -20,21 +20,21 @@ use Data::Dumper;
 	print join(", ", map { $_->{name}{nameOfRecord}{fullName} } @{$students->{student}}[0..10] ) . "\n";
 }
 
-__END__
-{
+if (1) {
 	say "US ENDPOINT; AU DATA STRUCUTRE - Brokered";
 	my $sifrest = SIF::REST->new({
 		endpoint => 'http://rest3api.sifassociation.org/api',
 		solutionId => 'auTestSolution',
+		type => '',
 	});
-
 	$sifrest->setupRest();
+	say "DONE";
 
 	my $students = XMLin($sifrest->get('StudentPersonals'), ForceArray => 0);
 	print join(", ", map { $_->{PersonInfo}{Name}{FamilyName} } @{$students->{StudentPersonal}}[0..10] ) . "\n";
 }
 
-{
+if (0) {
 	say "AU ENDPOINT; AU DATA STRUCUTRE - Direct";
 	my $sifrest = SIF::REST->new({
 		#endpoint => 'http://siftraining.dd.com.au/api',
